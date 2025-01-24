@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPay 新規登録</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d50000;
+        }
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        .tab {
+            display: flex;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .tab span {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .active {
+            border-bottom: 2px solid red;
+            color: red;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .button {
+            background-color: #ccc;
+            color: #fff;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: not-allowed;
+        }
+        .button.active {
+            background-color: #d50000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">PayPay</div>
+    </div>
+
+    <div class="container">
+        <div class="tab">
+            <span class="active">新規登録</span>
+            <span>ログイン</span>
+        </div>
+
+        <input type="text" id="phone" placeholder="携帯電話番号">
+        <input type="password" id="password" placeholder="パスワード">
+        <button id="registerBtn" class="button" disabled>新規登録</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const phoneInput = document.getElementById("phone");
+            const passwordInput = document.getElementById("password");
+            const registerBtn = document.getElementById("registerBtn");
+
+            function validateInputs() {
+                const phone = phoneInput.value.trim();
+                const password = passwordInput.value.trim();
+                if (phone.length >= 10 && password.length >= 6) {
+                    registerBtn.classList.add("active");
+                    registerBtn.disabled = false;
+                } else {
+                    registerBtn.classList.remove("active");
+                    registerBtn.disabled = true;
+                }
+            }
+
+            phoneInput.addEventListener("input", validateInputs);
+            passwordInput.addEventListener("input", validateInputs);
+
+            registerBtn.addEventListener("click", async function () {
+                const phone = phoneInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                const response = await fetch("http://localhost:3000/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ phone, password }),
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert("登録成功！ログインしてください。");
+                } else {
+                    alert("登録に失敗しました: " + result.message);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
